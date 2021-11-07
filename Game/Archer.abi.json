@@ -1,0 +1,84 @@
+{
+	"ABI version": 2,
+	"version": "2.1",
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"base","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "attack",
+			"inputs": [
+				{"name":"id","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deathByBaseDestruction",
+			"inputs": [
+				{"name":"id","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getPowerArmor",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"uint256"}
+			]
+		},
+		{
+			"name": "takeAttack",
+			"inputs": [
+				{"name":"damage","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "health",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"health","type":"uint256"}
+			]
+		},
+		{
+			"name": "powerArmor",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"powerArmor","type":"uint256"}
+			]
+		},
+		{
+			"name": "powerAttack",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"powerAttack","type":"uint256"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"health","type":"uint256"},
+		{"name":"powerArmor","type":"uint256"},
+		{"name":"powerAttack","type":"uint256"},
+		{"name":"baseAddress","type":"address"}
+	]
+}
