@@ -1,0 +1,47 @@
+{
+	"ABI version": 2,
+	"version": "2.1",
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "AddToQueue",
+			"inputs": [
+				{"name":"name","type":"string"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "RemoveToQueue",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "queueInShop",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"queueInShop","type":"string[]"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"queueInShop","type":"string[]"}
+	]
+}
