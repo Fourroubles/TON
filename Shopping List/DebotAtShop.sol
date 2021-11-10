@@ -77,7 +77,7 @@ contract DebotAtShop is DebotListInitialization {
             time: uint64(now),
             expire: 0,
             callbackId: tvm.functionId(makePurchase___),
-            onErrorId: tvm.functionId(onError)  
+            onErrorId: tvm.functionId(0)  
         }(m_address, amount, false, 3, empty);
     }
     
@@ -92,7 +92,7 @@ contract DebotAtShop is DebotListInitialization {
                 time: uint64(now),
                 expire: 0,
                 callbackId: tvm.functionId(onSuccess),
-                onErrorId: tvm.functionId(onError)
+                onErrorId: tvm.functionId(0)
             }(m_PurchaseId, amount);        
     }    
 
@@ -153,7 +153,7 @@ contract DebotAtShop is DebotListInitialization {
                 time: uint64(now),
                 expire: 0,
                 callbackId: tvm.functionId(onSuccess),
-                onErrorId: tvm.functionId(onError)
+                onErrorId: tvm.functionId(0)
         }(uint32(num));
     }
 }

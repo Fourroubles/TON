@@ -14,7 +14,7 @@ struct Purchase {
 
 struct SummaryPurchase {
     uint32 paidCount;
-    uint32 isntPaidCount;
+    uint32 unPaidCount;
     uint32 totalPrice;
 }
 
@@ -27,7 +27,7 @@ interface IMsig {
 }
 
 interface IShoppingList {
-   function addPurchases(string name, uint amount) external;
+   function addPurchase(string name, uint amount) external;
    function deletePurchase(uint32 id) external;
    function buy(uint32 id, uint32 price) external;
    function getPurchase() external returns (Purchase[] tasks);

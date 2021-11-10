@@ -34,13 +34,13 @@ contract ShoppingList {
         }
     }
 
-    function addPurchases(string name, uint amount) public onlyOwner {
+    function addPurchase(string name, uint amount) public onlyOwner {
         tvm.accept();
         m_count++;
         m_purchase[m_count] = Purchase(m_count, name, amount, now, false, 0);
     }
 
-    function deletePurchases(uint32 id) public onlyOwner {
+    function deletePurchase(uint32 id) public onlyOwner {
         require(m_purchase.exists(id), 102);
         tvm.accept();
         delete m_purchase[id];
@@ -55,19 +55,19 @@ contract ShoppingList {
 
     function getSummaryPurchase() public view returns (SummaryPurchase summaryPurchase) {
         uint32 paidCount;
-        uint32 isntPaidCount;
+        uint32 unPaidCount;
         uint32 totalPrice;
 
         for((, Purchase purchase) : m_purchase) {
             if  (purchase.isBuy) {
+                unPaidCount++;
+            } 
+            else {
                 paidCount++;
-            } else {
-                isntPaidCount++;
+                totalPrice += purchase.price;
             }
-
-            totalPrice += purchase.price;
         }
 
-        summaryPurchase = SummaryPurchase(paidCount, isntPaidCount,totalPrice);
+        summaryPurchase = SummaryPurchase(paidCount, unPaidCount, totalPrice);
     }
 }

@@ -15,20 +15,40 @@ import "DataAndInter.sol";
 abstract contract DebotListInitialization is Debot {
     bytes m_icon;
 
-    TvmCell m_shoppingListCode; // TODO contract code
-    address m_address;  // TODO contract address
-    SummaryPurchase m_summaryPurchase;        // Statistics of incompleted and completed tasks
-    uint32 m_PurchaseId;    // Task id for update. I didn't find a way to make this var local
-    uint256 m_masterPubKey; // User pubkey
-    address m_msigAddress;  // User wallet address
+    TvmCell public m_shoppingListCode; 
+    address m_address;  
+    SummaryPurchase m_summaryPurchase;       
+    uint32 m_PurchaseId;    
+    uint256 m_masterPubKey; 
+    address m_msigAddress;  
+    TvmCell public m_shoppingListStateInit;
+    TvmCell public m_shoppingListData;
 
-    uint32 INITIAL_BALANCE =  200000000;  // Initial TODO contract balance
+    uint32 INITIAL_BALANCE =  200000000;
 
-    function setTodoCode(TvmCell code) public {
+    function setShoppingListCode(TvmCell code, TvmCell data) public {
         require(msg.pubkey() == tvm.pubkey(), 101);
         tvm.accept();
+        m_shoppingListData = data;
         m_shoppingListCode = code;
+        m_shoppingListStateInit = tvm.buildStateInit(m_shoppingListCode, m_shoppingListCode);
     }
+
+    function getDebotInfo() public functionID(0xDEB) override view returns(
+        string name, string version, string publisher, string key, string author,
+        address support, string hello, string language, string dabi, bytes icon
+    ) {
+        name = "Shopping List DeBot";
+        version = "0.0.1";
+        publisher = "";
+        key = "Shopping list manager";
+        author = "@Fourroubles";
+        support = address.makeAddrStd(0, 0x66e01d6df5a8d7677d9ab2daf7f258f1e2a7fe73da5320300395f99e01dc3b5f);
+        hello = "Hi, i'm a Shopping List DeBot .";
+        language = "en";
+        dabi = m_debotAbi.get();
+        icon = m_icon;
+    }    
 
     function start() public override {
         Terminal.input(tvm.functionId(savePublicKey),"Please enter your public key", false);
@@ -38,6 +58,16 @@ abstract contract DebotListInitialization is Debot {
         _getSummaryPurchase(tvm.functionId(setSummaryPurchase));
     }
 
+    
+    function onError(uint32 sdkError, uint32 exitCode) public  {
+        Terminal.print(0, format("Operation failed. sdkError {}, exitCode {}", sdkError, exitCode));
+        menu();
+    }
+
+    function getRequiredInterfaces() public view override returns (uint256[] interfaces) {
+        return [ Terminal.ID, Menu.ID, AddressInput.ID, ConfirmInput.ID ];
+    }
+
     function savePublicKey(string value) public {
         (uint res, bool status) = stoi("0x" + value);
 
@@ -45,7 +75,7 @@ abstract contract DebotListInitialization is Debot {
             m_masterPubKey = res;
 
             Terminal.print(0, "Checking if you already have a Shopping list ...");
-            TvmCell deployState = tvm.insertPubkey(m_shoppingListCode, m_masterPubKey);
+            TvmCell deployState = tvm.insertPubkey(m_shoppingListStateInit, m_masterPubKey);
             m_address = address.makeAddrStd(0, tvm.hash(deployState));
             Terminal.print(0, format("Info: your ShoppingList contract address is {}", m_address));
             Sdk.getAccountType(tvm.functionId(checkStatus), m_address);
@@ -87,7 +117,7 @@ abstract contract DebotListInitialization is Debot {
             time: uint64(now),
             expire: 0,
             callbackId: tvm.functionId(waitBeforeDeploy),
-            onErrorId: tvm.functionId(onErrorRepeatCredit)  // Just repeat if something went wrong
+            onErrorId: tvm.functionId(onErrorRepeatCredit)  
         }(m_address, INITIAL_BALANCE, false, 3, empty);
     }
 
@@ -155,5 +185,3 @@ abstract contract DebotListInitialization is Debot {
 
     function menu() virtual internal;
 }
-
-
