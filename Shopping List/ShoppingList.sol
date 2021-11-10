@@ -21,7 +21,7 @@ contract ShoppingList {
         m_ownerPubkey = pubkey;
     }
 
-    function getPurchases() public view returns (Purchase[] purchases) {
+    function getPurchase() public view returns (Purchase[] purchases) {
         Purchase tmp;
 
         for((uint32 id, Purchase purchase) : m_purchase) {
