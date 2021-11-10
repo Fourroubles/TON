@@ -27,7 +27,7 @@ abstract contract DebotInter is Debot {
 
     uint32 INITIAL_BALANCE =  200000000;
 
-   /* */ function setTodoCode(TvmCell code, TvmCell data) public {
+    function setTodoCode(TvmCell code, TvmCell data) public {
         require(msg.pubkey() == tvm.pubkey(), 101);
         tvm.accept();
         m_shoppingListCode = code;
@@ -45,12 +45,12 @@ abstract contract DebotInter is Debot {
         _getStat(tvm.functionId(setStat));
     }
 
-    /* */function start() public override {
+    function start() public override {
         Terminal.input(tvm.functionId(savePublicKey),"Please enter your public key", false);
     }
 
     
-    /* */function getDebotInfo() public functionID(0xDEB) override view returns(
+    function getDebotInfo() public functionID(0xDEB) override view returns(
         string name, string version, string publisher, string key, string author,
         address support, string hello, string language, string dabi, bytes icon
     ) {
@@ -66,11 +66,11 @@ abstract contract DebotInter is Debot {
         icon = m_icon;
     }
 
-    /* */function getRequiredInterfaces() public view override returns (uint256[] interfaces) {
+    function getRequiredInterfaces() public view override returns (uint256[] interfaces) {
         return [ Terminal.ID, Menu.ID, AddressInput.ID, ConfirmInput.ID ];
     }
 
-    /* */function savePublicKey(string value) public {
+    function savePublicKey(string value) public {
         (uint res, bool status) = stoi("0x"+value);
         if (status) {
             m_masterPubKey = res;
