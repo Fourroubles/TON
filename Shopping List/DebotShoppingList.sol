@@ -27,13 +27,12 @@ contract DebotShoppingList is DebotInter {
         );
     }
 
-    function addPurchase(uint32 index) public {
-        index = index; 
-        Terminal.input(tvm.functionId(addNamePurchase), "Item name: ", false);
+    function addPurchase() public { 
+        Terminal.input(tvm.functionId(addPurchase_), "Item name: ", false);
     }
 
-    function addNamePurchase(string name) public {
-        _name = name;
+    function addPurchase_(string value) public {
+        _name = value;
         Terminal.input(tvm.functionId(createPurchase), "Amount: ", false);
     }
 
@@ -50,7 +49,7 @@ contract DebotShoppingList is DebotInter {
                 expire: 0,
                 callbackId: tvm.functionId(onSuccess),
                 onErrorId: tvm.functionId(onError)
-            }(value, uint32(num));
+            }(_name, uint32(num));
     }
 
     

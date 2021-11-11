@@ -28,7 +28,7 @@ contract DebotAtShop is DebotInter {
 
     function makePurchase(uint32 index) public {
         index = index;
-        if (m_summaryPurchase.unPaidCount > 0) {
+        if (m_summaryPurchase.paidCount > 0) {
             Terminal.input(tvm.functionId(makePurchase_), "Enter  number of things:", false);
         } 
         else {
@@ -40,7 +40,7 @@ contract DebotAtShop is DebotInter {
     function makePurchase_(string value) public {
         (uint256 num,) = stoi(value);
         m_PurchaseId = uint32(num);
-        Terminal.input(tvm.functionId(buy), "Enter amount:", false);
+        Terminal.input(tvm.functionId(buy), "Enter price:", false);
     }
 
     function buy(string value) public {

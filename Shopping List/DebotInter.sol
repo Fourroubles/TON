@@ -14,6 +14,8 @@ import "../base/Sdk.sol";
 import "DataAndInter.sol";
 
 abstract contract DebotInter is Debot {
+
+    uint public tytuie;
     bytes m_icon;
   
     TvmCell m_shoppingListCode; 
@@ -42,7 +44,7 @@ abstract contract DebotInter is Debot {
     }
 
     function onSuccess() public view {
-        _getStat(tvm.functionId(setStat));
+        _getSummaryPurchase(tvm.functionId(setSummaryPurchase));
     }
 
     function start() public override {
@@ -57,10 +59,10 @@ abstract contract DebotInter is Debot {
         name = "Shopping List DeBot";
         version = "0.0.2";
         publisher = "@Fourroubles";
-        key = "Shopping Lis manager";
+        key = "Shopping List manager";
         author = "TON Labs";
         support = address.makeAddrStd(0, 0x66e01d6df5a8d7677d9ab2daf7f258f1e2a7fe73da5320300395f99e01dc3b5f);
-        hello = "Hi, i'm a Shopping Lis DeBot.";
+        hello = "Hi, i'm a Shopping List DeBot.";
         language = "en";
         dabi = m_debotAbi.get();
         icon = m_icon;
@@ -89,7 +91,7 @@ abstract contract DebotInter is Debot {
 
     function checkStatus(int8 acc_type) public {
         if (acc_type == 1) { // acc is active and  contract is already deployed
-            _getStat(tvm.functionId(setStat));
+            _getSummaryPurchase(tvm.functionId(setSummaryPurchase));
 
         } else if (acc_type == -1)  { // acc is inactive
             Terminal.print(0, "You don't have a Shopping List yet, so a new contract with an initial balance of 0.2 tokens will be deployed");
@@ -119,7 +121,7 @@ abstract contract DebotInter is Debot {
             time: uint64(now),
             expire: 0,
             callbackId: tvm.functionId(waitBeforeDeploy),
-            onErrorId: tvm.functionId(onErrorRepeatCredit)  // Just repeat if something went wrong
+            onErrorId: tvm.functionId(onErrorRepeatCredit) 
         }(m_address, INITIAL_BALANCE, false, 3, empty);
     }
 
@@ -150,7 +152,7 @@ abstract contract DebotInter is Debot {
                 abiVer: 2,
                 dest: m_address,
                 callbackId: tvm.functionId(onSuccess),
-                onErrorId:  tvm.functionId(onErrorRepeatDeploy),    // Just repeat if something went wrong
+                onErrorId:  tvm.functionId(onErrorRepeatDeploy),   
                 time: 0,
                 expire: 0,
                 sign: true,
@@ -169,12 +171,12 @@ abstract contract DebotInter is Debot {
         deploy();
     }
 
-    function setStat(SummaryPurchase summaryPurchase) public {
+    function setSummaryPurchase(SummaryPurchase summaryPurchase) public {
         m_summaryPurchase = summaryPurchase;
         _menu();
     }
 
-     function _getStat(uint32 answerId) private view {
+     function _getSummaryPurchase(uint32 answerId) private view {
         optional(uint256) none;
         IShoppingList(m_address).getSummaryPurchase {
             abiVer: 2,
@@ -190,13 +192,12 @@ abstract contract DebotInter is Debot {
 
     function _menu() virtual internal;
 
-    function showShoppingList(uint32 index) public view {
-        index = index;
+    function showShoppingList() public view {
         optional(uint256) none;
         IShoppingList(m_address).getPurchase {
             abiVer: 2,
             extMsg: true,
-            sign: true,
+            sign: false,
             pubkey: none,
             time: uint64(now),
             expire: 0,
@@ -206,16 +207,19 @@ abstract contract DebotInter is Debot {
     }
 
     function showShoppingList_(Purchase[] purchase) public {
+        uint i;
+        Purchase tmp;
         if (purchase.length > 0 ) {
             Terminal.print(0, "Your Shopping list:");
-            for (uint i = 0; i < purchase.length; i++) {
+            for (i = 0; i < purchase.length; i++) {
                 string completed;
-                if (purchase[i].isBuy) {
+                tmp = purchase[i];
+                if (tmp.isBuy) {
                     completed = '✓';
                 } else {
                     completed = ' ';
                 }
-                Terminal.print(0, format("{} {} {} {} {} {}", purchase[i].id, completed, purchase[i].name, purchase[i].amount, purchase[i].price, purchase[i].timeCreate));
+                Terminal.print(0, format("{} {}  \"{}\"  amount: {}", tmp.id, completed, tmp.name, tmp.amount));
             }
         } 
         else {
@@ -225,8 +229,7 @@ abstract contract DebotInter is Debot {
         _menu();
     }
 
-    function deletePurchases(uint32 index) public {
-        index = index;
+    function deletePurchases() public {
         if (m_summaryPurchase.paidCount + m_summaryPurchase.unPaidCount > 0) {
             Terminal.input(tvm.functionId(deletePurchases_), "Enter task number:", false);
         } else {
